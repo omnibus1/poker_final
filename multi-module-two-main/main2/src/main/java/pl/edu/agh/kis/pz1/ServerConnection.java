@@ -24,8 +24,9 @@ public class ServerConnection implements Runnable{
     }
     @Override
     public void run() {
-        ByteBuffer serverResponse=ByteBuffer.allocate(BUFFER_SIZE);
+
         while(true){
+            ByteBuffer serverResponse=ByteBuffer.allocate(BUFFER_SIZE);
 
             try {
                 serverSocket.read(serverResponse);
@@ -34,9 +35,11 @@ public class ServerConnection implements Runnable{
             }
             String data = new String(serverResponse.array()).trim();
             if(data.length()>0){
-                System.out.printf("Server: %s%n",data);
+                System.out.printf("%s\n",data);
+
             }
-            serverResponse.clear();
+
+
 
         }
 
