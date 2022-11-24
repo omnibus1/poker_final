@@ -88,16 +88,16 @@ public class Game {
         }
         player.hasMoved=true;
     }
-    void handleReplace(Player player){
-        System.out.println(player.name+" Do you want to replace some of your cards: type yes for yes or anything without yes for no");
-        String response=scanner.nextLine();
-        if(response.contains("yes")) {
-            readCardsAndReplace(player);
-
-
-        }
-
-    }
+//    void handleReplace(Player player){
+//        System.out.println(player.name+" Do you want to replace some of your cards: type yes for yes or anything without yes for no");
+//        String response=scanner.nextLine();
+//        if(response.contains("yes")) {
+//            readCardsAndReplace(player);
+//
+//
+//        }
+//
+//    }
     void handleBid(Player player){
         System.out.println("Do you want to raise the bid yes or anything to cancel");
         String userResponse=scanner.nextLine();
@@ -344,16 +344,34 @@ public class Game {
         return response;
 
     }
-    public String interpretate(String playerInput,Player player){
+    public String interpretate(String playerInput,Player player,boolean replacingRound){
         playerInput=playerInput.toUpperCase();
         if(player!=playerMoving){
             return "Its not your turn its "+playerMoving.name +"'s turn";
         }
+
         if(!player.chosenMove.equals("")){
-            return makeMove(player);
+            System.out.println("xxx");
+            if(playerInput.startsWith("YES")){
+                System.out.println("yyy");
+                return makeMove(player);
+            }
+            else{
+                player.chosenMove="";
+                return "ok choose your move again";
+            }
+        }
+        if(playerInput.startsWith("REPLACE")&&replacingRound){
+            System.out.println("in replace interprate");
+            return handleReplace(playerInput,player);
         }
         if(playerInput.startsWith("BID")){
-            return handleBid(playerInput,player);
+            if(!replacingRound) {
+                return handleBid(playerInput, player);
+            }
+            else{
+                return "Its the replacing round you can only replace";
+            }
         }
         return "Invalid command type HELP to recive help";
     }
@@ -371,11 +389,74 @@ public class Game {
 
 
     }
+    String handleReplace(String playerInput,Player player){
+        String tmp=playerInput;
+        if(playerInput.strip().length()==7){
+            return "you must enter a number/numbers after replace";
+        }
+        System.out.println("1");
+        String response="";
+        playerInput=playerInput.substring(7);
+        System.out.println("2");
+        playerInput=playerInput.strip();
+        System.out.println("3");
+
+        String[] splited = playerInput.split(" ");
+        ArrayList<Integer> indexes=new ArrayList<>();
+        System.out.println("4");
+        for(String s:splited) {
+            int index = Integer.parseInt(s);
+            if (index >= 0 && index <= 4 && !indexes.contains(index)) {
+                indexes.add(index);
+            }
+        }
+        System.out.println("-------");
+        response+="Are you sure you want to replace these cards:";
+        for(int i:indexes){
+            response+=player.Deck.get(i)+"---";
+        }
+        System.out.println("======");
+        player.chosenMove=tmp;
+        return response;
+    }
     String makeMove(Player player){
         if(player.chosenMove.startsWith("BID")){
             return handlePlayerBid(player);
         }
+        if(player.chosenMove.startsWith("REPLACE")){
+            return handleReplace(player);
+        }
         return "";
+    }
+    String handleReplace(Player player){
+        String response="";
+        String playerInput=player.chosenMove.substring(7);
+        playerInput=playerInput.strip();
+
+        String[] splited = playerInput.split(" ");
+        ArrayList<Integer> indexes=new ArrayList<>();
+        for(String s:splited) {
+            int index = Integer.parseInt(s);
+            if (index >= 0 && index <= 4 && !indexes.contains(index)) {
+                indexes.add(index);
+                response+=player.Deck.get(index);
+            }
+        }
+        for(int index:indexes){
+            Card old=player.Deck.get(index);
+            Card newCard=Deck.draw();
+            player.Deck.set(index,newCard);
+            response+=("Replaced "+ old+" for "+newCard+" at index "+Integer.toString(index)+" - ");
+
+        }
+        response+="/ALL Player "+player.name+" replaced "+indexes.size()+" cards\n";
+        player.hasReplaced=true;
+        player.hasMoved=true;
+        i++;
+        player.chosenMove = "";
+        nextMoveingPlayer();
+        response += "Player moving is" + playerMoving.name;
+        return response;
     }
     String handlePlayerBid(Player player) {
         int playerBid = Integer.parseInt(player.chosenMove.substring(3).strip());
@@ -384,14 +465,15 @@ public class Game {
             if (player.balance - playerBid >= 0) {
                 currentBid = playerBid;
                 sumToWin += currentBid;
-                response += (" Bid: +" + playerBid + " by " + player.name + "\n");
-                response += "There is " + sumToWin + " tokens to win\n";
+
                 player.balance -= currentBid;
 
 
                 player.hasMoved = true;
                 response +="/PRIVATE"+ player.name + "your balance after bidding is " + player.balance + "\n";
                 i++;
+                response += ("/ALLBid: +" + playerBid + " by " + player.name + "\n");
+                response += "There is " + sumToWin + " tokens to win\n";
 
                 player.chosenMove = "";
                 playerMoving = Players.get(i%numberOfPlayers);
@@ -400,6 +482,14 @@ public class Game {
             }
         }
         return response;
+    }
+    void nextMoveingPlayer(){
+        i+=1;
+        while(!Players.get(i).inGame){
+            i++;
+        }
+        playerMoving=Players.get(i);
+
     }
 
 

@@ -13,6 +13,7 @@ public class Player {
     boolean inGame=false;
     boolean wantsToStart=false;
     public String chosenMove="";
+    boolean hasReplaced;
 
     SocketChannel socket;
     ArrayList<Card> Deck=new ArrayList<>();

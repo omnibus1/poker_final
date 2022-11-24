@@ -29,6 +29,8 @@ public class Server{
     static int readyUsers=0;
     static boolean inGame;
     static Game game;
+    static boolean firstRound;
+    static int replaced=0;
 
 
 
@@ -111,6 +113,8 @@ public class Server{
         for(Player player: game.Players){
             sendToPlayer(player,game.getPlayerStatus(player));
             sendToPlayer(player,game.avilableMovesHelper());
+            sendToPlayer(player,"Only in this round you can replace your cards");
+            firstRound=true;
         }
     }
 
@@ -149,16 +153,30 @@ public class Server{
             if(readyUsers==numOfPlayersForGame){
                 serverToAll("All users ready starting the game...");
                 askForStart=false;
-                inGame=true;
+
                 prepareGame();
                 serverToAll("Player starting is "+game.playerMoving.name);
             }
             return;
         }
+        if(firstRound){
+            System.out.println("first round handler");
+            String gameResponse=game.interpretate(userResponse,player,true);
+            serverInterprate(gameResponse,player);
+            if(player.hasReplaced){
+                replaced+=1;
+            }
+            if(replaced==numOfPlayersForGame){
+                serverToAll("Replacing part ended its time to play");
+                firstRound=false;
+                inGame=true;
+            }
+            return;
+        }
         if(inGame){
             System.out.println("ingame handler");
-            String gameResponse=game.interpretate(userResponse,player);
-            sendToPlayer(player,gameResponse);
+            String gameResponse=game.interpretate(userResponse,player,false);
+            serverInterprate(gameResponse,player);
 
 
         }
@@ -248,6 +266,20 @@ public class Server{
             throw new RuntimeException(e);
         }
 
+    }
+    public static void serverInterprate(String gameResponse,Player player) throws InterruptedException {
+        gameResponse=gameResponse.toUpperCase();
+        System.out.println("inside serverInterprate");
+        int messageSplit=gameResponse.indexOf("/ALL");
+        if(messageSplit==-1){
+            sendToPlayer(player,gameResponse);
+        }
+        else{
+            String messageToPlayer=gameResponse.substring(0,messageSplit);
+            String messageToAll=gameResponse.substring(messageSplit+4);
+            sendToPlayer(player,messageToPlayer);
+            serverToAll(messageToAll);
+        }
     }
 
     class ReadFromSockets{
