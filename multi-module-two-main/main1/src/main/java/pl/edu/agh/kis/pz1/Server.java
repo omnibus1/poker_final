@@ -7,10 +7,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.ByteBuffer;
 import java.nio.channels.*;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 public class Server{
@@ -31,6 +28,9 @@ public class Server{
     static Game game;
     static boolean firstRound;
     static int replaced=0;
+    static ArrayList<Player>performedAction=new ArrayList<>();
+    static boolean askForRematch=false;
+    static int readyUsersForRematch=0;
 
 
 
@@ -104,7 +104,7 @@ public class Server{
         }
 
     }
-    static void prepareGame(){
+    static void prepareGame() throws InterruptedException {
         game=new Game(numOfPlayersForGame);
         for(Player player:connectedUsers.values()){
             game.addPlayer(player);
@@ -112,10 +112,11 @@ public class Server{
         game.startGame();
         for(Player player: game.Players){
             sendToPlayer(player,game.getPlayerStatus(player));
-            sendToPlayer(player,game.avilableMovesHelper());
-            sendToPlayer(player,"Only in this round you can replace your cards");
-            firstRound=true;
+
+
         }
+        serverToAll(game.avilableMovesHelper(true));
+        firstRound=true;
     }
 
 
@@ -133,6 +134,10 @@ public class Server{
             return;
 
         }
+        if(userResponse.equals("status")){
+            sendToPlayer(player,game.getPlayerStatus(player));
+            return;
+        }
         if (userResponse.length() > 0) {
             System.out.printf("message recived from: %s %s\n", connectedUsers.get(key.channel()), userResponse);
             if (userResponse.startsWith("/all")) {
@@ -144,15 +149,17 @@ public class Server{
             System.out.println("in ask for start");
 
 
-            if(userResponse.startsWith("yes")&& !player.wantsToStart){
+            if(userResponse.startsWith("yes")&& !performedAction.contains(player)){
                 readyUsers+=1;
                 serverToAll(player.name+ " is ready "+readyUsers+"/"+numOfPlayersForGame);
-                player.wantsToStart=true;
+                performedAction.add(player);
 
             }
             if(readyUsers==numOfPlayersForGame){
+                performedAction.removeAll(performedAction);
                 serverToAll("All users ready starting the game...");
                 askForStart=false;
+                readyUsers=0;
 
                 prepareGame();
                 serverToAll("Player starting is "+game.playerMoving.name);
@@ -163,13 +170,15 @@ public class Server{
             System.out.println("first round handler");
             String gameResponse=game.interpretate(userResponse,player,true);
             serverInterprate(gameResponse,player);
-            if(player.hasReplaced){
+            if(player.hasReplaced && !performedAction.contains(player)){
                 replaced+=1;
+                performedAction.add(player);
             }
             if(replaced==numOfPlayersForGame){
-                serverToAll("Replacing part ended its time to play");
+                serverToAll("Replacing part ended its time to play\n Avilable moves are CALL, BID, PASS");
                 firstRound=false;
                 inGame=true;
+               performedAction.removeAll(performedAction);
             }
             return;
         }
@@ -177,6 +186,42 @@ public class Server{
             System.out.println("ingame handler");
             String gameResponse=game.interpretate(userResponse,player,false);
             serverInterprate(gameResponse,player);
+            if(game.gameOver){
+                serverToAll("--------------------------------------------------");
+                serverToAll("--------------------------------------------------");
+                serverToAll("*****************Game is over*********************");
+                serverToAll("The winner is "+game.winner.name);
+                serverToAll("Winning is "+game.sumToWin);
+                serverToAll("*****************Game is over*********************");
+                serverToAll("--------------------------------------------------");
+                serverToAll("--------------------------------------------------");
+                inGame=false;
+                askForStart=true;
+                TimeUnit.SECONDS.sleep(1);
+                serverToAll("Voting for another round starts now\n");
+                serverToAll("type yes if you want to play");
+                return;
+            }
+            System.out.println("asd");
+            if(askForRematch){
+                System.out.println("in ask for start");
+
+
+                if(userResponse.startsWith("yes")&& !performedAction.contains(player)){
+                    readyUsersForRematch+=1;
+                    serverToAll(player.name+ " is ready "+readyUsersForRematch+"/"+numOfPlayersForGame);
+                    performedAction.add(player);
+
+                }
+                if(readyUsersForRematch==numOfPlayersForGame){
+                    readyUsersForRematch=0;
+                    performedAction.removeAll(performedAction);
+                    serverToAll("All users ready starting the game...");
+                    askForStart=true;
+
+                }
+                return;
+            }
 
 
         }

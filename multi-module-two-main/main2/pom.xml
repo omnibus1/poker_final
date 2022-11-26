@@ -76,8 +76,15 @@
         <groupId>pl.edu.agh.kis.pz1</groupId>
         <artifactId>utils</artifactId>
         <version>${project.version}</version>
+
     </dependency>
 
+    <!-- https://mvnrepository.com/artifact/org.sonarsource.scanner.maven/sonar-maven-plugin -->
+    <dependency>
+      <groupId>org.sonarsource.scanner.maven</groupId>
+      <artifactId>sonar-maven-plugin</artifactId>
+      <version>3.9.1.2184</version>
+    </dependency>
 
   </dependencies>
 
