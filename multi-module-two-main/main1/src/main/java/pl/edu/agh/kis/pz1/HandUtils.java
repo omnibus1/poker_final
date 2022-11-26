@@ -166,7 +166,7 @@ enum  HandUtils {
     private static int iterateAndCompareHighCard(final Iterator<Map.Entry<Card.Rank, List<Card>>> handIterator,
                                                  final Iterator<Map.Entry<Card.Rank, List<Card>>> otherHandIterator) {
         while (handIterator.hasNext() && otherHandIterator.hasNext()) {
-            final int rankComparison = Integer.compare(handIterator.next().getKey().getRankValue(),
+            final int rankComparison = Integer. compare(handIterator.next().getKey().getRankValue(),
                     otherHandIterator.next().getKey().getRankValue());
             if (rankComparison != 0) {
                 return rankComparison;

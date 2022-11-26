@@ -65,6 +65,15 @@
         </executions>
       </plugin>
     </plugins>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.0.0-M7</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
   </build> 
 
   <!-- najświeższa wersja w otwartym repo maven to 4.13.2 -->
@@ -87,7 +96,12 @@
       <artifactId>sonar-maven-plugin</artifactId>
       <version>3.9.1.2184</version>
     </dependency>
-
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>compile</scope>
+    </dependency>
 
 
   </dependencies>
