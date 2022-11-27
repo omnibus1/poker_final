@@ -8,21 +8,23 @@ import java.util.ArrayList;
 
 public class Player {
     public String name="Anonymus";
-    public int balance=300;
+    int balance=300;
     boolean hasMoved=false;
     boolean inGame=false;
 
-    public String chosenMove="";
+    String chosenMove="";
     boolean hasReplaced;
 
     SocketChannel socket;
-    ArrayList<Card> Deck=new ArrayList<>();
+    ArrayList<Card> playerDeck=new ArrayList<>();
     Player(String name,int balance){
         this.name=name;
         this.balance=balance;
 
 
     }
+    Player(){}
+
 
     Player(String name,SocketChannel socket){
         this.name=name;
@@ -31,9 +33,9 @@ public class Player {
 
     void printDeck(){
         int i=0;
-        System.out.print(this.name+" ");
-        for(Card card:Deck){
-            System.out.print(Integer.toString(i)+"-"+card+", ");
+        logger(this.name+" ");
+        for(Card card:playerDeck){
+            logger(Integer.toString(i)+"-"+card+", ");
             i++;
         }
         System.out.println("");
@@ -41,8 +43,8 @@ public class Player {
     public String getDeck(){
         int i=0;
         String deckString="";
-        System.out.print(this.name+" ");
-        for(Card card:Deck){
+        logger(this.name+" ");
+        for(Card card:playerDeck){
             deckString+=Integer.toString(i)+"-"+card+", ";
             i++;
         }
@@ -52,14 +54,19 @@ public class Player {
     }
 
     void addBalance(int amount){
-        this.balance+=amount;
+        if(amount>0){
+            this.balance+=amount;
+        }
 
     }
     int getBalance(){
         return this.balance;
     }
     void setBalance(int amount){
-        this.balance=amount;
+        if(amount>0){
+            this.balance=amount;
+        }
+
     }
     void printCards(ArrayList<Card> cards){
         for(Card c:cards){
@@ -67,11 +74,17 @@ public class Player {
         }
     }
     void drawFromDeck(Deck deck){
-        this.Deck=deck.drawCard(5);
+        this.playerDeck=deck.drawCard(5);
     }
-
-
-
+    String getChosenMove(){
+        return this.chosenMove;
+    }
+    void setChosenMove(String move){
+        this.chosenMove=move;
+    }
+    static void logger(String message){
+        System.out.println(message);
+    }
 
 
 }

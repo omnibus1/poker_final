@@ -4,7 +4,7 @@ package pl.edu.agh.kis.pz1;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
-
+import pl.edu.agh.kis.pz1.Player;
 public class Game {
     int numberOfPlayers;
     int i=0;
@@ -275,7 +275,7 @@ public class Game {
         System.out.println("-------");
         response+="Are you sure you want to replace these cards:";
         for(int i:indexes){
-            response+=player.Deck.get(i)+"---";
+            response+=player.playerDeck.get(i)+"---";
         }
         System.out.println("======");
         player.chosenMove=tmp;
@@ -332,13 +332,13 @@ public class Game {
             int index = Integer.parseInt(s);
             if (index >= 0 && index <= 4 && !indexes.contains(index)) {
                 indexes.add(index);
-                response+=player.Deck.get(index);
+                response+=player.playerDeck.get(index);
             }
         }
         for(int index:indexes){
-            Card old=player.Deck.get(index);
-            Card newCard=Deck.draw();
-            player.Deck.set(index,newCard);
+            Card old=player.playerDeck.get(index);
+            Card newCard=dealerDeck.draw();
+            player.playerDeck.set(index,newCard);
             response+=("Replaced "+ old+" for "+newCard+" at index "+Integer.toString(index)+" - ");
 
         }
@@ -391,7 +391,7 @@ public class Game {
         ArrayList<FiveCardPokerHand> handsToCompare=new ArrayList<>();
             player.hasMoved=true;
             for(Player playersInGame:Players){
-                handsToCompare.add(new FiveCardPokerHand.Builder().addCards(playersInGame.Deck).addName(playersInGame.name).build());
+                handsToCompare.add(new FiveCardPokerHand.Builder().addCards(playersInGame.playerDeck).addName(playersInGame.name).build());
                 System.out.println(playersInGame.name+"-----added");
 
             }

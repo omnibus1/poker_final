@@ -4,12 +4,16 @@ import junit.framework.TestCase;
 
 public class ServerTest extends TestCase {
 
-    public void testPrepareGame() {
+
+
+
+
+    public void testGetMessage() {
     }
 
-    public void testSendToPlayer() {
+    public void testTestSendToPlayer() {
     }
 
-    public void testServerInterprate() {
+    public void testTestServerInterprate() {
     }
 }
