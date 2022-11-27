@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="poker-client" />
+        <module name="poker-server" />
+        <module name="poker-model" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="multi-module" target="17" />
+      <module name="poker-client" target="17" />
+      <module name="poker-model" target="17" />
+      <module name="poker-server" target="17" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

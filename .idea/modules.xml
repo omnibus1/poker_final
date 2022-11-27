@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/multi-module-two-main/multi-module.iml" filepath="$PROJECT_DIR$/multi-module-two-main/multi-module.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multi-module-two-main/poker-client/poker-client.iml" filepath="$PROJECT_DIR$/multi-module-two-main/poker-client/poker-client.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multi-module-two-main/poker-model/poker-model.iml" filepath="$PROJECT_DIR$/multi-module-two-main/poker-model/poker-model.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multi-module-two-main/poker-server/poker-server.iml" filepath="$PROJECT_DIR$/multi-module-two-main/poker-server/poker-server.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/poker_final.iml" filepath="$PROJECT_DIR$/.idea/poker_final.iml" />
+    </modules>
+  </component>
+</project>
