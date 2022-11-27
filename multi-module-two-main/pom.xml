@@ -1,63 +1,192 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>pl.edu.agh.kis.pz1</groupId>
-  <artifactId>multi-module</artifactId>
-  <version>1.0</version>
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>pl.edu.agh.kis.pz1</groupId>
+    <artifactId>Poker1</artifactId>
+    <name>Project 1 - Poker</name>
+    <packaging>pom</packaging>
+    <version>1.0-SNAPSHOT</version>
+    <modules>
+        <module>poker-client</module>
+        <module>poker-server</module>
+        <module>poker-model</module>
+    </modules>
 
-  <name>Przyklad - aplikacja wielomodulowa z dwoma modulami z klasa Main i metoda main</name>
-  <packaging>pom</packaging>
+    <dependencyManagement>
+        <dependencies>
 
-  <!-- Dodane przez pskrzynski -->
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.target>1.8</maven.compiler.target>
-    <maven.compiler.source>1.8</maven.compiler.source>
-  </properties>
+            <dependency>
+                <groupId>pl.edu.agh.kis.pz1</groupId>
+                <artifactId>poker-client</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>pl.edu.agh.kis.pz1</groupId>
+                <artifactId>poker-server</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>pl.edu.agh.kis.pz1</groupId>
+                <artifactId>poker-model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.9.1.2184</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-  <modules>
-      <module>utils</module>
-      <module>main1</module>
-      <module>main2</module>
-  </modules>
-
-
-  <dependencyManagement>
-      <dependencies>
-
-          <dependency>
-              <groupId>pl.edu.agh.kis.pz1</groupId>
-              <artifactId>main1</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>pl.edu.agh.kis.pz1</groupId>
-              <artifactId>main2</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-          <dependency>
-              <groupId>pl.edu.agh.kis.pz1</groupId>
-              <artifactId>utils</artifactId>
-              <version>${project.version}</version>
-          </dependency>
-
-      </dependencies>
-  </dependencyManagement>
-
-    <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.8.1</version>
-                    <configuration>
-                        <source>1.8</source>
-                        <target>1.8</target>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+    <properties>
+        <maven.compiler.source>17</maven.compiler.source>
+        <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>org.sonarsource.scanner.maven</groupId>
+            <artifactId>sonar-maven-plugin</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
+
+<!--<?xml version="1.0" encoding="UTF-8"?>-->
+<!--<project xmlns="http://maven.apache.org/POM/4.0.0"-->
+<!--         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"-->
+<!--         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">-->
+<!--    <modelVersion>4.0.0</modelVersion>-->
+
+<!--    <groupId>com.fgieracki</groupId>-->
+<!--    <artifactId>Poker1</artifactId>-->
+<!--    <name>Project 1 - Poker</name>-->
+<!--    <packaging>pom</packaging>-->
+<!--    <version>1.0-SNAPSHOT</version>-->
+<!--    <modules>-->
+<!--        <module>poker-client</module>-->
+<!--        <module>poker-server</module>-->
+<!--        <module>poker-model</module>-->
+<!--    </modules>-->
+
+<!--    <dependencyManagement>-->
+<!--        <dependencies>-->
+
+<!--            <dependency>-->
+<!--                <groupId>pl.edu.agh.kis.pz1</groupId>-->
+<!--                <artifactId>poker-client</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>pl.edu.agh.kis.pz1</groupId>-->
+<!--                <artifactId>poker-server</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>pl.edu.agh.kis.pz1</groupId>-->
+<!--                <artifactId>poker-model</artifactId>-->
+<!--                <version>${project.version}</version>-->
+<!--            </dependency>-->
+<!--            <dependency>-->
+<!--                <groupId>org.sonarsource.scanner.maven</groupId>-->
+<!--                <artifactId>sonar-maven-plugin</artifactId>-->
+<!--                <version>3.9.1.2184</version>-->
+<!--            </dependency>-->
+<!--        </dependencies>-->
+<!--    </dependencyManagement>-->
+
+<!--    <properties>-->
+<!--        <maven.compiler.source>17</maven.compiler.source>-->
+<!--        <maven.compiler.target>17</maven.compiler.target>-->
+<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
+<!--    </properties>-->
+<!--    <dependencies>-->
+<!--        <dependency>-->
+<!--            <groupId>org.sonarsource.scanner.maven</groupId>-->
+<!--            <artifactId>sonar-maven-plugin</artifactId>-->
+<!--        </dependency>-->
+<!--        <dependency>-->
+<!--            <groupId>junit</groupId>-->
+<!--            <artifactId>junit</artifactId>-->
+<!--            <version>4.13.2</version>-->
+<!--            <scope>test</scope>-->
+<!--        </dependency>-->
+<!--    </dependencies>-->
+
+<!--</project>-->
+<!--        &lt;!&ndash;<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"&ndash;&gt;-->
+<!--        &lt;!&ndash;  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">&ndash;&gt;-->
+<!--        &lt;!&ndash;  <modelVersion>4.0.0</modelVersion>&ndash;&gt;-->
+<!--        &lt;!&ndash;  <groupId>pl.edu.agh.kis.pz1</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;  <artifactId>multi-module</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;  <version>1.0</version>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;  <name>Przyklad - aplikacja wielomodulowa z dwoma modulami z klasa Main i metoda main</name>&ndash;&gt;-->
+<!--        &lt;!&ndash;  <packaging>pom</packaging>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;  &lt;!&ndash; Dodane przez pskrzynski &ndash;&gt;&ndash;&gt;-->
+<!--        &lt;!&ndash;  <properties>&ndash;&gt;-->
+<!--        &lt;!&ndash;    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>&ndash;&gt;-->
+<!--        &lt;!&ndash;    <maven.compiler.target>1.8</maven.compiler.target>&ndash;&gt;-->
+<!--        &lt;!&ndash;    <maven.compiler.source>1.8</maven.compiler.source>&ndash;&gt;-->
+<!--        &lt;!&ndash;  </properties>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;  <modules>&ndash;&gt;-->
+<!--        &lt;!&ndash;      <module>utils</module>&ndash;&gt;-->
+<!--        &lt;!&ndash;      <module>main1</module>&ndash;&gt;-->
+<!--        &lt;!&ndash;      <module>main2</module>&ndash;&gt;-->
+<!--        &lt;!&ndash;  </modules>&ndash;&gt;-->
+
+
+<!--        &lt;!&ndash;  <dependencyManagement>&ndash;&gt;-->
+<!--        &lt;!&ndash;      <dependencies>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;          <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <groupId>pl.edu.agh.kis.pz1</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <artifactId>main1</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <version>${project.version}</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;          </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;          <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <groupId>pl.edu.agh.kis.pz1</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <artifactId>main2</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <version>${project.version}</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;          </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;          <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <groupId>pl.edu.agh.kis.pz1</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <artifactId>utils</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <version>${project.version}</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;          </dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;          <dependency>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <artifactId>maven-surefire-plugin</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;              <version>3.0.0-M7</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;          </dependency>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;      </dependencies>&ndash;&gt;-->
+<!--        &lt;!&ndash;  </dependencyManagement>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;    <build>&ndash;&gt;-->
+<!--        &lt;!&ndash;        <pluginManagement>&ndash;&gt;-->
+<!--        &lt;!&ndash;            <plugins>&ndash;&gt;-->
+<!--        &lt;!&ndash;                <plugin>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <groupId>org.apache.maven.plugins</groupId>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <artifactId>maven-compiler-plugin</artifactId>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <version>3.8.1</version>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    <configuration>&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <source>1.8</source>&ndash;&gt;-->
+<!--        &lt;!&ndash;                        <target>1.8</target>&ndash;&gt;-->
+<!--        &lt;!&ndash;                    </configuration>&ndash;&gt;-->
+<!--        &lt;!&ndash;                </plugin>&ndash;&gt;-->
+<!--        &lt;!&ndash;            </plugins>&ndash;&gt;-->
+<!--        &lt;!&ndash;        </pluginManagement>&ndash;&gt;-->
+<!--        &lt;!&ndash;    </build>&ndash;&gt;-->
+
+<!--        &lt;!&ndash;</project>&ndash;&gt;-->
