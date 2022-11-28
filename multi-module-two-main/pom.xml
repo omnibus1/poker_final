@@ -12,6 +12,7 @@
         <module>poker-client</module>
         <module>poker-server</module>
         <module>poker-model</module>
+        <module>poker-common</module>
     </modules>
 
     <dependencyManagement>

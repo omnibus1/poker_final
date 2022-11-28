@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
-
+import static pl.edu.agh.kis.pz1.Client.logger;
 
 
 public class ServerConnection implements Runnable{
@@ -33,7 +33,7 @@ public class ServerConnection implements Runnable{
             }
             String data = new String(serverResponse.array()).trim();
             if(data.length()>0){
-                System.out.printf("%s\n",data);
+                logger(String.format("%s%n",data));
 
             }
             if(readOver)break;

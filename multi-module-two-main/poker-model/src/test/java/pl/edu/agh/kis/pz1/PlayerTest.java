@@ -9,10 +9,23 @@ import java.nio.channels.SocketChannel;
 
 public class PlayerTest extends TestCase {
 
-    public void testPrintDeck() {
-    }
+
 
     public void testGetDeck() {
+        Game game=new Game(1);
+        Player player=new Player();
+        game.addPlayer(player);
+        game.givePlayersCards();
+        assertEquals(5,player.playerDeck.size());
+        String deckString="";
+        int i=0;
+        for(Card card:player.playerDeck){
+            deckString+=Integer.toString(i)+"-"+card+", ";
+            i++;
+        }
+        deckString+="\n";
+        assertEquals(player.getDeck(),deckString);
+
 
     }
 

@@ -9,13 +9,8 @@
         <module name="poker-client" />
         <module name="poker-server" />
         <module name="poker-model" />
+        <module name="poker-common" />
       </profile>
     </annotationProcessing>
-    <bytecodeTargetLevel>
-      <module name="multi-module" target="17" />
-      <module name="poker-client" target="17" />
-      <module name="poker-model" target="17" />
-      <module name="poker-server" target="17" />
-    </bytecodeTargetLevel>
   </component>
 </project>

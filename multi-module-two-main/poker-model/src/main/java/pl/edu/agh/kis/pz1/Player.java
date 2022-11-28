@@ -38,7 +38,7 @@ public class Player {
             logger(Integer.toString(i)+"-"+card+", ");
             i++;
         }
-        System.out.println("");
+        logger("");
     }
     public String getDeck(){
         int i=0;

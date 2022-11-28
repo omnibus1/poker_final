@@ -326,10 +326,7 @@ public class FiveCardPokerHand implements Comparable<FiveCardPokerHand> {
 
         }
 
-        //        public Builder addCard(final Optional<Card> card) {
-//            this.cards.add(card.orElseThrow(IllegalStateException::new));
-//            return this;
-//        }
+
         public Builder addCards(ArrayList<Card> playerCards) {
             this.cards.addAll(playerCards);
             return this;

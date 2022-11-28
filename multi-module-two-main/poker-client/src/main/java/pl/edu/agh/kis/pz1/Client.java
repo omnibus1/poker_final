@@ -12,13 +12,14 @@ import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SocketChannel;
 
+
 public class Client {
     private static final int BUFFER_SIZE = 1024;
 
 
     public static void main(String[] args) {
 
-        System.out.println("Starting MySelectorClientExample...");
+        logger("Trying to connect to the server");
         try {
             int port = 9999;
             InetAddress hostIP = InetAddress.getLocalHost();

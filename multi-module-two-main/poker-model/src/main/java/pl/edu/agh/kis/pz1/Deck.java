@@ -18,7 +18,7 @@ public class Deck {
 
     }
     Deck(){
-        gameDeck=new ArrayList<Card>();
+        gameDeck=new ArrayList<>();
     }
 
 

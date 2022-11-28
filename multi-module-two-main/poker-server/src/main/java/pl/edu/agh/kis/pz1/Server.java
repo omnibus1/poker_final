@@ -32,20 +32,22 @@ public class Server{
     static ArrayList<Player>performedAction=new ArrayList<>();
     static boolean askForRematch=false;
     static int readyUsersForRematch=0;
+    static int Ante;
 
 
 
 
     public static void main(String[] args) {
-        System.out.println("starting server");
+        logger("starting server");
 
         try {
             hostIP = InetAddress.getLocalHost();
             port = 9999;
             numOfPlayersForGame=Integer.parseInt(args[0]);
-            System.out.println(numOfPlayersForGame);
-            System.out.printf("listening to connections on %s:%d...%n",
-                    hostIP.getHostAddress(), port);
+            Ante=Integer.parseInt(args[1]);
+            logger(Integer.toString(numOfPlayersForGame));
+            logger(String.format("listening to connections on %s:%d...%n",
+                    hostIP.getHostAddress(), port));
             selector = Selector.open();
             mySocket = ServerSocketChannel.open();
             serverSocket = mySocket.socket();
@@ -78,7 +80,7 @@ public class Server{
             }
 
         } catch (IOException e) {
-            System.out.println(e.getMessage());
+            logger(e.getMessage());
             e.printStackTrace();
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -97,7 +99,7 @@ public class Server{
         SocketChannel myClient = mySocket.accept();
         myClient.configureBlocking(false);
         connectedUsers.put(myClient,new Player("User"+Integer.toString(usersCount),myClient));
-        System.out.println("client accepted:"+connectedUsers.get(myClient).name);
+        logger("client accepted:"+connectedUsers.get(myClient).name);
         // Register interest in reading this channel
         myClient.register(selector, SelectionKey.OP_READ);
         serverToAll("User "+connectedUsers.get(myClient).name+" has joined "+ usersCount+"/"+numOfPlayersForGame);
@@ -133,7 +135,7 @@ public class Server{
         SocketChannel myClient = (SocketChannel) key.channel();
         Player player=connectedUsers.get(key.channel());
         if(userResponse.toLowerCase().startsWith("help")){
-            System.out.println("inside help");
+            logger("inside help");
             sendToPlayer(player,game.handleHelp(userResponse));
             return;
 
@@ -143,14 +145,14 @@ public class Server{
             return;
         }
         if (userResponse.length() > 0) {
-            System.out.printf("message recived from: %s %s\n", connectedUsers.get(key.channel()), userResponse);
+            logger(String.format("message recived from: %s %s%n", connectedUsers.get(key.channel()), userResponse));
             if (userResponse.startsWith("/all")) {
                 sendToAllUsersFromUser(userResponse.substring(4), myClient);
                 return;
             }
         }
         if(askForStart){
-            System.out.println("in ask for start");
+            logger("in ask for start");
 
 
             if(userResponse.startsWith("yes")&& !performedAction.contains(player)){
@@ -171,7 +173,7 @@ public class Server{
             return;
         }
         if(firstRound){
-            System.out.println("first round handler");
+            logger("first round handler");
             String gameResponse=game.interpretate(userResponse,player,true);
             serverInterprate(gameResponse,player);
             if(player.hasReplaced && !performedAction.contains(player)){
@@ -187,28 +189,16 @@ public class Server{
             return;
         }
         if(inGame){
-            System.out.println("ingame handler");
+            logger("ingame handler");
             String gameResponse=game.interpretate(userResponse,player,false);
             serverInterprate(gameResponse,player);
             if(game.gameOver){
-                serverToAll("--------------------------------------------------");
-                serverToAll("--------------------------------------------------");
-                serverToAll("*****************Game is over*********************");
-                serverToAll("The winner is "+game.winner.name);
-                serverToAll("Winning is "+game.sumToWin);
-                serverToAll("*****************Game is over*********************");
-                serverToAll("--------------------------------------------------");
-                serverToAll("--------------------------------------------------");
-                inGame=false;
-                askForStart=true;
-                TimeUnit.SECONDS.sleep(1);
-                serverToAll("Voting for another round starts now\n");
-                serverToAll("type yes if you want to play");
+                printWinner();
                 return;
             }
-            System.out.println("asd");
+            logger("asd");
             if(askForRematch){
-                System.out.println("in ask for start");
+                logger("in ask for start");
 
 
                 if(userResponse.startsWith("yes")&& !performedAction.contains(player)){
@@ -236,7 +226,7 @@ public class Server{
 
     }
     static String getMessage(SelectionKey key) throws IOException {
-        System.out.println("inside get message");
+        logger("inside get message");
         SocketChannel myClient = (SocketChannel) key.channel();
 
         // Set up out 1k buffer to read data into
@@ -244,7 +234,7 @@ public class Server{
         myClient.read(clientResponse);
         String data = new String(clientResponse.array()).trim();
         if (data.length() > 0) {
-            System.out.println(data);
+            logger(data);
             return data;}
         return "";
 
@@ -255,9 +245,9 @@ public class Server{
     private static void sendToAllUsersFromUser(String message,SocketChannel messageAuthor){
 
 
-        System.out.println("MESSAGE:"+message);
+        logger("MESSAGE:"+message);
         String finalMessage =connectedUsers.get(messageAuthor).name+"has said: "+ message;
-        System.out.println(finalMessage);
+        logger(finalMessage);
         connectedUsers.forEach((x, value)-> {
             try {
                 ByteBuffer serverResponse = ByteBuffer.allocate(BUFFER_SIZE);
@@ -306,7 +296,7 @@ public class Server{
     }
     public static void serverInterprate(String gameResponse,Player player) throws InterruptedException {
         gameResponse=gameResponse.toUpperCase();
-        System.out.println("inside serverInterprate");
+        logger("inside serverInterprate");
         int messageSplit=gameResponse.indexOf("/ALL");
         if(messageSplit==-1){
             sendToPlayer(player,gameResponse);
@@ -317,6 +307,27 @@ public class Server{
             sendToPlayer(player,messageToPlayer);
             serverToAll(messageToAll);
         }
+    }
+    static void logger(String message){
+        System.out.println(message);
+    }
+    static void printWinner() throws InterruptedException {
+        String bar="--------------------------------------------------";
+        String gameOver="*****************Game is over*********************";
+        serverToAll(bar);
+        serverToAll(bar);
+        serverToAll(gameOver);
+        serverToAll("*********The winner is "+game.winner.name+"********");
+        serverToAll("Winning is "+game.sumToWin);
+        serverToAll(gameOver);
+        serverToAll(bar);
+        serverToAll(bar);
+        inGame=false;
+        askForStart=true;
+        TimeUnit.SECONDS.sleep(1);
+        serverToAll("Voting for another round starts now\n");
+        serverToAll("type yes if you want to play");
+
     }
 
 

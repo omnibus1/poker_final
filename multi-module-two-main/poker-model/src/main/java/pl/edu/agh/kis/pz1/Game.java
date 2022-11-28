@@ -4,17 +4,17 @@ package pl.edu.agh.kis.pz1;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Scanner;
-import pl.edu.agh.kis.pz1.Player;
+
 public class Game {
     int numberOfPlayers;
     int i=0;
     int winningBid;
     Player playerMoving;
-    int ante;
+    int ante=100;
     int playerInitialBalance=600;
     Deck dealerDeck;
-    public int currentBid;
-    public int sumToWin;
+    int currentBid;
+    int sumToWin;
     ArrayList<Player> Players=new ArrayList<>();
     public Scanner scanner=new Scanner(System.in);
     boolean gameOver;
@@ -24,7 +24,7 @@ public class Game {
     ArrayList<FiveCardPokerHand> standings;
     Game(int numberOfPlayers){
         this.numberOfPlayers=numberOfPlayers;
-        System.out.println("Creating the deck");
+        logger("Creating the deck");
         dealerDeck=new Deck();
         dealerDeck.fillDeck();
         this.playersWantingToPlay=numberOfPlayers;
@@ -33,70 +33,54 @@ public class Game {
         if(Players.size()<numberOfPlayers){
             Players.add(player);
             player.inGame=true;
-            System.out.println("Added Player "+player.name+ " to the game "+Integer.toString(Players.size())+"/"+Integer.toString(numberOfPlayers));
+            logger("Added "+player.name+ " to the game "+Integer.toString(Players.size())+"/"+Integer.toString(numberOfPlayers));
         }
         else{
-            System.out.println("Already max players");
+            logger("Already max players");
         }
     }
     void givePlayersCards(){
-        System.out.println("shuffling the deck");
+        logger("shuffling the deck");
         dealerDeck.shuffle();
         for(Player player:Players){
-            System.out.println("Player "+player.name+" is drawing cards");
+
             player.drawFromDeck(dealerDeck);
         }
     }
 
 
-    void choseAnte(){
-        int tmp=0;
-        for(Player player:Players){
-            System.out.println(player.name + " enter the ante you would like to have");
-            tmp+=Integer.parseInt(scanner.nextLine());
 
-        }
-        this.ante=Math.round(tmp/Players.size());
-        System.out.println("This games ante is "+this.ante);
-
-    }
     void getAnteFromPlayers(){
-        System.out.println("Ante "+ante);
+        logger("Ante "+ante);
         for(Player player:Players){
-            System.out.print("Before "+player.name+" "+ player.balance);
+            logger("Before "+player.name+" "+ player.balance);
             this.sumToWin+=this.ante;
             player.balance-=ante;
-            System.out.println("Balance After Ante"+player.balance);
+            logger("Balance After Ante"+player.balance);
         }
     }
-//    boolean checkIfGameOver(){
-//        if (gameOver==true)return gameOver;
-//        if(Players.size()==1){
-//            gameOver=true;
-//            return true;
-//        }
-//        gameOver=false;
-//        return false;
-//    }
-    public void printPlayerStatus(Player player){
-        System.out.println("Player "+player.name+ " your founds are "+ player.balance+"\n THE PRIZE TO WIN IS "+ sumToWin);
-        player.printDeck();
-    }
+
+
 
     String getPlayerStatus(Player player){
-        return "Player "+player.name+ " your founds are "+ player.balance+"\n THE PRIZE TO WIN IS "+ sumToWin+"\n"+player.getDeck()+"\nPlayer moving is "+playerMoving.name;
+        if(playerMoving!=null){
+        return playerPrefix(player)+ " your founds are "+ player.balance+"\n THE PRIZE TO WIN IS "+ sumToWin+"\n"+player.getDeck()+"\n"+newPlayerMovingString();
+    }
+        else{
+            return playerPrefix(player)+ " your founds are "+ player.balance+"\n THE PRIZE TO WIN IS "+ sumToWin+"\n"+"currently no player is moving";
+        }
     }
 
     void initializeParameters(){
         gameOver=false;
         sumToWin=0;
-        System.out.println("SET sum to win to: "+sumToWin);
+        logger("SET sum to win to: "+sumToWin);
         this.dealerDeck=new Deck();
         dealerDeck.fillDeck();
         dealerDeck.shuffle();
-        System.out.println("created a new deck and shuffled it");
+        logger("created a new deck and shuffled it");
         currentBid=0;
-        System.out.println("SET current bid to "+currentBid);
+        logger("SET current bid to "+currentBid);
         for(Player player:Players){
             player.inGame=true;
             player.hasMoved=false;
@@ -104,41 +88,15 @@ public class Game {
         }
 
     }
-    void play(){
-        if(Players.size()==numberOfPlayers) {
-            while (true) {
-                if (playersWantingToPlay == numberOfPlayers) {
-                    this.startGame();
-                }
-                for (Player player : Players) {
-                    System.out.println("Do you want to play again yes for yes else no");
-                    String response = scanner.nextLine();
-                    if (response.startsWith("yes")) playersWantingToPlay += 1;
-
-                }
-                if (playersWantingToPlay != numberOfPlayers) {
-                    System.out.println("ending the game");
-                    break;
-                }
-            }
-        }
-        else{
-            System.out.println("Not enough players");
-        }
-
-
-    }
 
     public void startGame(){
         initializeParameters();
 
-//        choseAnte();
-        this.ante=100;
+
+
         getAnteFromPlayers();
         givePlayersCards();
-        for(Player player:Players){
-            printPlayerStatus(player);
-        }
+
         playerMoving=Players.get(i%numberOfPlayers);
     }
 
@@ -164,7 +122,7 @@ public class Game {
         if(userInput.contains("CALL")){
             response+="CALL -you call to check the game, after it the winner will be decided, use it wisely\n\n";
         }
-        if(response.contains("STATUS")){
+        if(userInput.contains("STATUS")){
             response+="STATUS -returns a status of the current play including your tokens, the prize to win and your deck of cards\n\n";
         }
         return response;
@@ -178,32 +136,31 @@ public class Game {
         }
 
         if(!player.chosenMove.equals("")){
-            System.out.println("xxx");
+            logger("xxx");
             if(playerInput.startsWith("YES")){
-                System.out.println("yyy");
+                logger("yyy");
                 return makeMove(player);
             }
-            else{
-                player.chosenMove="";
-                return "ok choose your move again";
-            }
+
+            player.chosenMove="";
+            return "ok choose your move again";
+
         }
         if(playerInput.startsWith("PASS")&&!replacingRound){
             return handlePass(player);
         }
         if(playerInput.startsWith("CALL")&&!replacingRound){
-            System.out.println("inside call");
+            logger("inside call");
             return handleCall(player);
         }
 
         if((playerInput.startsWith("REPLACE")||playerInput.startsWith("PASS"))){
             if(replacingRound){
-                System.out.println("in replace interprate");
+                logger("in replace interprate");
                 return handleReplace(playerInput,player);
             }
-            else{
-                return "you cannot replace in this round,"+avilableMovesHelper(false);
-            }
+            return "you cannot replace in this round,"+avilableMovesHelper(false);
+
 
 
         }
@@ -211,9 +168,9 @@ public class Game {
             if(!replacingRound) {
                 return handleBid(playerInput, player);
             }
-            else{
-                return "Its the replacing round you can only replace";
-            }
+
+            return "Its the replacing round you can only replace";
+
         }
         return "Invalid command type HELP to get a quick manual help";
     }
@@ -241,43 +198,44 @@ public class Game {
 
 
     }
-    String handleReplace(String playerInput,Player player){
-        if(playerInput.startsWith("PASS")){
-            String response="Player "+player.name+" didin't replace any cards\n";
-            player.hasReplaced=true;
-            player.hasMoved=true;
-            nextMoveingPlayer();
-            response+="/ALLPlayer"+player.name+" didnt replace any cards\n";
-            response += "Player moving is " + playerMoving.name;
-            return response;
+    String handleReplace(String playerInput,Player player) {
+        if (playerInput.startsWith("PASS")) {
+            player.chosenMove="RPASS";
+            return "Are you sure you dont want to replace any cards, you cannot replace them later";
 
         }
-        String tmp=playerInput;
-        if(playerInput.strip().length()==7){
-            return "you must enter a number/numbers after replace";
+        String tmp = playerInput;
+        if (playerInput.strip().length() == 7) {
+            return "You must enter a number/numbers after replace";
         }
-        System.out.println("1");
-        String response="";
-        playerInput=playerInput.substring(7);
-        System.out.println("2");
-        playerInput=playerInput.strip();
-        System.out.println("3");
+
+        String response = "";
+        playerInput = playerInput.substring(7);
+
+        playerInput = playerInput.strip();
+
 
         String[] splited = playerInput.split(" ");
-        ArrayList<Integer> indexes=new ArrayList<>();
-        System.out.println("4");
-        for(String s:splited) {
-            int index = Integer.parseInt(s);
-            if (index >= 0 && index <= 4 && !indexes.contains(index)) {
-                indexes.add(index);
+        ArrayList<Integer> indexes = new ArrayList<>();
+
+        try{
+            for (String s : splited) {
+                int index = Integer.parseInt(s);
+                if (index >= 0 && index <= 4 && !indexes.contains(index)) {
+                    indexes.add(index);
+                }
             }
         }
-        System.out.println("-------");
-        response+="Are you sure you want to replace these cards:";
-        for(int i:indexes){
-            response+=player.playerDeck.get(i)+"---";
+        catch (Exception e){
+            return "You have entered invalid text, enter SPACE SEPERATED NUMBERS";
         }
-        System.out.println("======");
+
+        response+="Are you sure you want to replace these cards:";
+
+        for(int idx:indexes){
+            response+=player.playerDeck.get(idx)+"; ";
+        }
+
         player.chosenMove=tmp;
         return response;
     }
@@ -294,7 +252,19 @@ public class Game {
         if(player.chosenMove.startsWith("CALL")){
             return playerMakeCall(player);
         }
+        if(player.chosenMove.startsWith("RPASS")){
+            return handleReplacePass(player);
+        }
         return "";
+    }
+    String handleReplacePass(Player player){
+        String response="Player "+player.name+" didin't replace any cards\n";
+        player.hasReplaced=true;
+        player.hasMoved=true;
+        nextMoveingPlayer();
+        response+="/ALLPlayer"+player.name+" didnt replace any cards\n";
+        response += newPlayerMovingString();
+        return response;
     }
     public String handleMadePass(Player player){
         String response="Youre out of the game for now";
@@ -306,7 +276,7 @@ public class Game {
         response+="Players left in game "+playersLeftInGame+"/"+numberOfPlayers;
         player.hasMoved=true;
         nextMoveingPlayer();
-        response += "Player moving is " + playerMoving.name;
+        response += newPlayerMovingString();
         if(chekcIfGameOver()){
             gameOver=true;
         }
@@ -328,13 +298,16 @@ public class Game {
 
         String[] splited = playerInput.split(" ");
         ArrayList<Integer> indexes=new ArrayList<>();
-        for(String s:splited) {
-            int index = Integer.parseInt(s);
-            if (index >= 0 && index <= 4 && !indexes.contains(index)) {
-                indexes.add(index);
-                response+=player.playerDeck.get(index);
+
+            for (String s : splited) {
+                int index = Integer.parseInt(s);
+                if (index >= 0 && index <= 4 && !indexes.contains(index)) {
+                    indexes.add(index);
+//
+                }
             }
-        }
+
+
         for(int index:indexes){
             Card old=player.playerDeck.get(index);
             Card newCard=dealerDeck.draw();
@@ -345,10 +318,10 @@ public class Game {
         response+="/ALL Player "+player.name+" replaced "+indexes.size()+" cards\n";
         player.hasReplaced=true;
         player.hasMoved=true;
-        System.out.println("Replace handled");
+        logger("Replace handled");
         player.chosenMove = "";
         nextMoveingPlayer();
-        response += "Player moving is " + playerMoving.name;
+        response += newPlayerMovingString();
         return response;
     }
     String handlePlayerBid(Player player) {
@@ -367,12 +340,19 @@ public class Game {
 
                 response += ("/ALLBid: +" + playerBid + " by " + player.name + "\n");
                 response += "There is " + sumToWin + " tokens to win\n";
-                System.out.println("bidding performed");
+                logger("bidding performed");
                 player.chosenMove = "";
                 nextMoveingPlayer();
-                response += "Player moving is " + playerMoving.name;
+                response += newPlayerMovingString();
 
             }
+            else{
+                response+="you dont have enough founds for that your founds are "+player.getBalance();
+            }
+        }
+        else{
+            response+="you must enter a bid thats higher than the current one";
+            player.chosenMove = "";
         }
         return response;
     }
@@ -387,12 +367,12 @@ public class Game {
     String playerMakeCall(Player player){
         String response="";
         response+="You have decided to call";
-        response+="/ALLPLayer"+player.name+"has called"+"Picking the winner";
+        response+="/ALLPLayer "+player.name+" has called, Picking the winner...";
         ArrayList<FiveCardPokerHand> handsToCompare=new ArrayList<>();
             player.hasMoved=true;
             for(Player playersInGame:Players){
                 handsToCompare.add(new FiveCardPokerHand.Builder().addCards(playersInGame.playerDeck).addName(playersInGame.name).build());
-                System.out.println(playersInGame.name+"-----added");
+                logger(playersInGame.name+"-----added");
 
             }
             this.gameOver=true;
@@ -401,10 +381,30 @@ public class Game {
             for(Player p:Players){
                 if(p.name.equals(winnerName)){
                     winner=p;
+                    winner.balance+=sumToWin;
                 }
             }
             return response;
 
+    }
+    void setCurrentBid(int bidAmount){
+        if(bidAmount>0){
+            this.currentBid=bidAmount;
+        }
+
+
+    }
+    int getCurrentBid(){
+        return this.currentBid;
+    }
+    static void logger(String message){
+        System.out.println(message);
+    }
+    String newPlayerMovingString(){
+        return "Player moving is "+playerMoving.name;
+    }
+    String playerPrefix(Player player){
+        return "Player "+player.name;
     }
 
 

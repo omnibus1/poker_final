@@ -35,7 +35,9 @@ p
 @.idea/libraries/Maven__org_junit_jupiter_junit_jupiter_5_9_0.xml,5/4/540522e00fd0a6fcfc832838985c1391bb98242c
 p
 @.idea/libraries/Maven__org_apiguardian_apiguardian_api_1_1_2.xml,7/8/78b158d79d4a615b8bf614d6ee88675e25eba276
-‰
-Ymulti-module-two-main/poker-client/src/main/java/pl/edu/agh/kis/pz1/ServerConnection.java,9/d/9d8d0645e5831293ba1ed869ad891d77a89338bf
-
-Omulti-module-two-main/poker-server/src/main/java/pl/edu/agh/kis/pz1/Server.java,1/9/197b8dc7a27b77b62b2d92b151e4488837b84b56
+a
+1multi-module-two-main/poker-model/poker-model.iml,7/2/72f3059f6a28dbe001073462c48a3754940673ad
+V
+&multi-module-two-main/multi-module.iml,e/5/e574cb22c6a5567d1a3a5532d3148bc201673354
+c
+3multi-module-two-main/poker-server/poker-server.iml,1/0/1056be22224958125fe90b629aa3d42552c88e31
